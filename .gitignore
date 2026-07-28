@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  SECRETS & PERSONAL DATA — never commit (this repo is public)
+# ─────────────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# Logged-in session / cookies
+storage_state.json
+
+# Browser profile dirs (contain your logged-in session cookies)
+*-profile/
+
+# Debug screenshots & logs (may show personal data)
+artifacts/
+*.log
+
+# Your resume (personal) — keep the folder, ignore the documents
+resume/*
+!resume/.gitkeep
+!resume/README.md
+
+# Rendered launchd job (has your machine paths) — keep only the template
+*.plist
+!*.plist.template
+
+# ── OS / Python ──
+.DS_Store
+.venv/
+__pycache__/
+*.pyc

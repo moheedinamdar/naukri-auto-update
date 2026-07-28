@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Pre-commit guard: blocks committing secrets / personal data to this PUBLIC repo.
+# Enable once with:  ./scripts/install-hooks.sh
+set -euo pipefail
+
+staged=$(git diff --cached --name-only)
+[ -z "$staged" ] && exit 0
+
+blocked=""
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  # Explicitly-allowed tracked files:
+  case "$f" in
+    .env.example|resume/.gitkeep|resume/README.md) continue ;;
+  esac
+  # Sensitive patterns:
+  case "$f" in
+    .env|.env.*|*/.env|storage_state.json|*storage_state.json) blocked="$blocked $f" ;;
+    *-profile/*|artifacts/*|*.log)                             blocked="$blocked $f" ;;
+    resume/*.pdf|resume/*.doc|resume/*.docx|resume/*.rtf)      blocked="$blocked $f" ;;
+    *.plist)                                                   blocked="$blocked $f" ;;
+  esac
+done <<< "$staged"
+
+if [ -n "$blocked" ]; then
+  printf '\033[31mpre-commit: refusing to commit sensitive/personal files:\033[0m\n' >&2
+  for f in $blocked; do printf '   - %s\n' "$f" >&2; done
+  printf 'Unstage them:  git restore --staged%s\n' "$blocked" >&2
+  printf '(They are git-ignored — do NOT force-add them to a public repo.)\n' >&2
+  exit 1
+fi
+exit 0
