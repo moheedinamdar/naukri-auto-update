@@ -10,19 +10,6 @@ or Edge) in an **isolated profile**, logs in, and re-uploads the resume from you
 
 ---
 
-> ## 🔒 Before you make this repo public — 10-second checklist
->
-> This repo is built to be safe to open-source. Just don't defeat the safety nets:
->
-> - ✅ **Never commit** `.env`, your `resume/` PDF, `*-profile/`, `artifacts/`, or `*.log` — they're git-ignored.
-> - ✅ Run `./scripts/install-hooks.sh` once — it blocks accidental commits of the above.
-> - ✅ Your **password lives only in `.env`** (git-ignored). Never hardcode it.
-> - ✅ Run `git status` before pushing — you should see none of the files above.
->
-> Details in **[SECURITY.md](SECURITY.md)**.
-
----
-
 ## Quick start (5 minutes)
 
 ```bash
