@@ -23,5 +23,5 @@ launchctl unload "$OUT" 2>/dev/null || true
 launchctl load "$OUT"
 
 echo "Installed LaunchAgent: $OUT"
-echo "Runs ./run.sh every day at 10:00 (a browser window appears briefly — that's expected)."
+echo "Runs ./run.sh every day at 10:00 (a browser window appears briefly, that's expected)."
 echo "Remove with:  launchctl unload \"$OUT\" && rm \"$OUT\""
