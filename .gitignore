@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────────────────────────
-#  SECRETS & PERSONAL DATA — never commit (this repo is public)
+#  SECRETS & PERSONAL DATA: never commit (this repo is public)
 # ─────────────────────────────────────────────────────────────────────────
 .env
 .env.*
@@ -15,12 +15,12 @@ storage_state.json
 artifacts/
 *.log
 
-# Your resume (personal) — keep the folder, ignore the documents
+# Your resume (personal): keep the folder, ignore the documents
 resume/*
 !resume/.gitkeep
 !resume/README.md
 
-# Rendered launchd job (has your machine paths) — keep only the template
+# Rendered launchd job (has your machine paths): keep only the template
 *.plist
 !*.plist.template
 
