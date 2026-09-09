@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  LaunchAgent TEMPLATE (safe to commit — contains no personal paths).
+  LaunchAgent TEMPLATE (safe to commit, contains no personal paths).
   Do NOT edit the paths by hand. Install with:
       ./scripts/install-launchagent.sh
   which renders this file with your checkout's absolute paths into
