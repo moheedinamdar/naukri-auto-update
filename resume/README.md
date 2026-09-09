@@ -1,6 +1,6 @@
 # resume/
 
-Put your resume **PDF** here — the tool uploads the newest `*.pdf` in this folder.
+Put your resume **PDF** here: the tool uploads the newest `*.pdf` in this folder.
 
 - Your resume is **personal data** and is **git-ignored**: only this note and
   `.gitkeep` are tracked, so your PDF is never committed to the public repo.
