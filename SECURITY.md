@@ -20,13 +20,13 @@ Only `.env.example`, `resume/.gitkeep`, `resume/README.md` and the
 
 ## Layered guardrails
 
-1. **`.gitignore`** — excludes every sensitive path above.
-2. **Pre-commit hook** (`.githooks/pre-commit`) — blocks a commit if any sensitive
+1. **`.gitignore`**: excludes every sensitive path above.
+2. **Pre-commit hook** (`.githooks/pre-commit`): blocks a commit if any sensitive
    file is staged. Enable it once: `./scripts/install-hooks.sh`.
-3. **Runtime preflight** — `naukri_update.py` refuses to run (exit code 6) if git is
+3. **Runtime preflight**: `naukri_update.py` refuses to run (exit code 6) if git is
    already **tracking** a sensitive file, and `run.sh` does the same check before it
    starts. This catches mistakes before anything is pushed.
-4. **Log redaction** — the password is never printed; the email is masked; sessions
+4. **Log redaction**: the password is never printed; the email is masked; sessions
    are never logged. Full tracebacks appear only with `NAUKRI_DEBUG=1`.
 
 ## Verify before you push
@@ -38,7 +38,7 @@ git add -A && git status   # still clean of the above (hook also blocks the comm
 
 ## If a secret was committed or pushed
 
-1. **Rotate it immediately** — change your Naukri password.
+1. **Rotate it immediately**: change your Naukri password.
 2. Remove it from history (not just the latest commit):
 
    ```bash
@@ -53,7 +53,7 @@ git add -A && git status   # still clean of the above (hook also blocks the comm
 ## Responsible use
 
 This tool automates **your own** Naukri account. Automating logins may be against
-Naukri's Terms of Use — use it on your own account, keep the frequency reasonable
+Naukri's Terms of Use: use it on your own account, keep the frequency reasonable
 (once a day), and never share your credentials. You are responsible for your use.
 
 ## Reporting
