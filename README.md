@@ -1,7 +1,7 @@
 # Naukri profile auto-update
 
 Keep your [Naukri.com](https://www.naukri.com) profile near the top of recruiter
-searches by automatically **re-uploading your resume** — which refreshes your
+searches by automatically **re-uploading your resume**, which refreshes your
 profile's *"last updated"* time, the signal Naukri's recruiter search ranks on.
 
 It drives a **real browser** (bundled Chromium by default; optionally your Chrome
@@ -20,7 +20,7 @@ cd naukri-auto-update
 # 2. Turn on the commit guard (blocks accidental secret commits)
 ./scripts/install-hooks.sh
 
-# 3. Put your resume PDF in ./resume/   (or skip — step 5 will ask for it)
+# 3. Put your resume PDF in ./resume/   (or skip: step 5 will ask for it)
 cp /path/to/your_resume.pdf resume/
 
 # 4. First run: creates .env for you, then stops so you can fill it in
@@ -36,7 +36,7 @@ resume will show *"Uploaded today"*.
 
 > **First run tips**
 >
-> - A **browser window pops up for a few seconds** — that's required (see below).
+> - A **browser window pops up for a few seconds**: that's required (see below).
 > - If Naukri shows a one-time OTP / "verify it's you", **complete it in that window
 >   once**. The tool remembers your device afterwards and won't ask again.
 > - No PDF in `resume/`? It **asks for the absolute path** and copies it into
@@ -47,7 +47,7 @@ resume will show *"Uploaded today"*.
 ## Why a visible browser? (headless doesn't work)
 
 Naukri is protected by **Akamai bot detection**, which serves an *"Access Denied"*
-page to **headless** browsers — old and new headless modes alike. So the browser
+page to **headless** browsers. Old and new headless modes alike. So the browser
 **always runs headful** (a real, visible window). Practical consequences:
 
 - Run it on a machine **with a display** (your Mac/PC), not a headless server.
@@ -79,14 +79,14 @@ Copy [`.env.example`](.env.example) to `.env` (auto-created on first run).
 
 | Variable | Required | Default | Purpose |
 | --- | --- | --- | --- |
-| `NAUKRI_EMAIL` | ✅ | — | Your Naukri login email |
-| `NAUKRI_PASSWORD` | ✅ | — | Your Naukri password |
+| `NAUKRI_EMAIL` | ✅ |, | Your Naukri login email |
+| `NAUKRI_PASSWORD` | ✅ |, | Your Naukri password |
 | `NAUKRI_BROWSER` | | `chromium` | `chromium` \| `chrome` \| `msedge` |
 | `NAUKRI_RESUME_PATH` | | *(auto)* | Explicit resume path (abs or relative to this folder) |
 | `NAUKRI_RESUME_NAME` | | *(auto)* | Pick a specific file inside `resume/` |
 | `NAUKRI_DEBUG` | | `0` | `1` = verbose logs + full tracebacks |
-| `NAUKRI_LOG_FILE` | | — | Also write the log here (relative → `artifacts/`) |
-| `NAUKRI_ARTIFACT_RETENTION_DAYS` | | — | Auto-delete old screenshots/logs |
+| `NAUKRI_LOG_FILE` | |, | Also write the log here (relative → `artifacts/`) |
+| `NAUKRI_ARTIFACT_RETENTION_DAYS` | |, | Auto-delete old screenshots/logs |
 
 **Resume selection order:** `NAUKRI_RESUME_PATH` → `NAUKRI_RESUME_NAME` → newest
 `*.pdf` in `resume/` → (first run) prompt for a path and copy it in.
@@ -101,7 +101,7 @@ Just run it yourself once a day:
 ./run.sh
 ```
 
-**Optional — schedule it (macOS).** Installs a LaunchAgent that runs `./run.sh`
+**Optional. Schedule it (macOS).** Installs a LaunchAgent that runs `./run.sh`
 headful every day at 10:00 (a browser window appears briefly):
 
 ```bash
@@ -151,19 +151,19 @@ anything) without launching a browser.
   [SECURITY.md](SECURITY.md).
 - **`resume-upload-failed.png`** → Naukri changed its page; update `SEL["resume_input"]`
   in [`naukri_update.py`](naukri_update.py).
-- **Python 3.14 error on install** → `run.sh` auto-selects Python 3.11–3.13; install
+- **Python 3.14 error on install** → `run.sh` auto-selects Python 3.11-3.13; install
   one with `brew install python@3.13`.
 
 ---
 
 ## How it works
 
-1. **Preflight** — validates git-safety, credentials, and resume (may prompt once).
-2. **Launch** — a headful, isolated browser profile.
-3. **Warm up** — loads the homepage to pick up anti-bot cookies.
-4. **Login** — only if the persistent profile isn't already logged in.
-5. **Re-upload** — sets the resume on Naukri's hidden file input; verifies on-page.
-6. **Wrap up** — prints a summary and prunes old artifacts (if configured).
+1. **Preflight**: validates git-safety, credentials, and resume (may prompt once).
+2. **Launch**: a headful, isolated browser profile.
+3. **Warm up**: loads the homepage to pick up anti-bot cookies.
+4. **Login**, only if the persistent profile isn't already logged in.
+5. **Re-upload**: sets the resume on Naukri's hidden file input; verifies on-page.
+6. **Wrap up**: prints a summary and prunes old artifacts (if configured).
 
 Screenshots for every step land in `artifacts/` (git-ignored) to make debugging easy.
 
@@ -172,5 +172,5 @@ Screenshots for every step land in `artifacts/` (git-ignored) to make debugging 
 ## Legal / responsible use
 
 This automates **your own** Naukri account. Automating logins may be against
-Naukri's Terms of Use — use it on your own account, keep it to once a day, and never
+Naukri's Terms of Use: use it on your own account, keep it to once a day, and never
 share your credentials. Provided under the [MIT License](LICENSE), **as-is**.
