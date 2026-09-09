@@ -241,7 +241,7 @@ def _validate_resume(path: Path) -> Path:
     mb = size / (1024 * 1024)
     if mb > MAX_RESUME_MB:
         log.warning(
-            f"resume is {mb:.1f} MB — Naukri's limit is ~{MAX_RESUME_MB} MB; "
+            f"resume is {mb:.1f} MB, Naukri's limit is ~{MAX_RESUME_MB} MB; "
             "the upload may be rejected."
         )
     return path
@@ -254,22 +254,22 @@ def _clean_path(raw: str) -> str:
 
 
 def _bootstrap_resume() -> Path:
-    """No resume found — ask for an absolute path (once) and copy it into resume/."""
+    """No resume found, ask for an absolute path (once) and copy it into resume/."""
     if not sys.stdin.isatty():
         raise HardFail(
             EXIT_RESUME,
             "No resume found in ./resume/ and not running interactively.\n"
             "    Add a PDF to ./resume/  (or set NAUKRI_RESUME_PATH in .env), then re-run.",
         )
-    log.warning("No resume found in ./resume/ — let's set one up (one time only).")
+    log.warning("No resume found in ./resume/, let's set one up (one time only).")
     print("\n  Enter the ABSOLUTE path to your resume PDF (or press Enter to cancel):", flush=True)
     for _ in range(5):
         try:
             raw = input("  resume path> ")
         except (EOFError, KeyboardInterrupt):
-            raise HardFail(EXIT_RESUME, "cancelled — no resume provided.")
+            raise HardFail(EXIT_RESUME, "cancelled, no resume provided.")
         if not raw.strip():
-            raise HardFail(EXIT_RESUME, "cancelled — no resume provided.")
+            raise HardFail(EXIT_RESUME, "cancelled, no resume provided.")
         src = Path(_clean_path(raw))
         if not src.exists() or not src.is_file():
             print(f"  ! not found: {src}", flush=True)
@@ -285,7 +285,7 @@ def _bootstrap_resume() -> Path:
             raise HardFail(EXIT_RESUME, f"could not copy resume into ./resume/: {exc}")
         log.info(f"copied resume -> resume/{dest.name} (git-ignored; reused automatically next time)")
         return _validate_resume(dest)
-    raise HardFail(EXIT_RESUME, "too many invalid attempts — no resume provided.")
+    raise HardFail(EXIT_RESUME, "too many invalid attempts, no resume provided.")
 
 
 def resolve_resume() -> Path:
@@ -314,7 +314,7 @@ def resolve_resume() -> Path:
         chosen = pdfs[0]
         others = ", ".join(p.name for p in pdfs[1:])
         log.warning(
-            f"multiple resumes in ./resume/ — using the newest: {chosen.name} "
+            f"multiple resumes in ./resume/, using the newest: {chosen.name} "
             f"(others: {others}). Override with NAUKRI_RESUME_NAME=<file> in .env."
         )
         return _validate_resume(chosen)
@@ -327,13 +327,13 @@ def preflight() -> Path:
     """Validate everything before touching a browser. Returns the resume path."""
     step("Preflight checks")
 
-    # 1) Git-safety FIRST — never run (or leak) if secrets are tracked.
+    # 1) Git-safety FIRST: never run (or leak) if secrets are tracked.
     tracked = git_tracked_sensitive()
     if tracked:
         listing = "\n    - ".join(tracked)
         raise HardFail(
             EXIT_GIT_SAFETY,
-            "Sensitive files are tracked by git — refusing to run so they can't leak:\n"
+            "Sensitive files are tracked by git, refusing to run so they can't leak:\n"
             f"    - {listing}\n"
             "    Fix: git rm --cached <file> ; confirm .gitignore covers it. If it was "
             "already pushed, rotate the secret. See SECURITY.md.",
@@ -344,11 +344,11 @@ def preflight() -> Path:
     email = os.environ.get("NAUKRI_EMAIL", "").strip()
     password = os.environ.get("NAUKRI_PASSWORD", "").strip()
     if email in PLACEHOLDER_VALUES:
-        problems.append("NAUKRI_EMAIL is missing or still the placeholder — edit .env")
+        problems.append("NAUKRI_EMAIL is missing or still the placeholder, edit .env")
     elif not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
         problems.append(f"NAUKRI_EMAIL doesn't look like an email ({redact_email(email)})")
     if password in PLACEHOLDER_VALUES:
-        problems.append("NAUKRI_PASSWORD is missing or still the placeholder — edit .env")
+        problems.append("NAUKRI_PASSWORD is missing or still the placeholder, edit .env")
     if problems:
         raise HardFail(EXIT_CONFIG, "Configuration problems:\n    - " + "\n    - ".join(problems))
 
@@ -356,7 +356,7 @@ def preflight() -> Path:
     browser = os.environ.get("NAUKRI_BROWSER", "chromium").strip().lower()
     if browser not in SUPPORTED_BROWSERS:
         log.warning(
-            f"unknown NAUKRI_BROWSER='{browser}' — will use bundled chromium. "
+            f"unknown NAUKRI_BROWSER='{browser}', will use bundled chromium. "
             f"Valid values: {', '.join(SUPPORTED_BROWSERS)}."
         )
         browser = "chromium"
@@ -369,7 +369,7 @@ def preflight() -> Path:
     # 5) Resume (may prompt on first run).
     resume = resolve_resume()
     where = f"resume/{resume.name}" if resume.parent == RESUME_DIR else str(resume)
-    log.info(f"config OK — user {redact_email(email)} · browser {browser} · headful (always)")
+    log.info(f"config OK, user {redact_email(email)} · browser {browser} · headful (always)")
     log.info(f"resume ready -> {where}")
     return resume
 
@@ -394,7 +394,7 @@ def _blocked_fail(page: Page, where: str) -> HardFail:
         f"Naukri's Akamai bot protection blocked the browser on the {where} page "
         "(Access Denied).\n"
         "    You're already headful; complete any human check ONCE in the window that "
-        "opened — the persistent profile then remembers it. Avoid VPN/datacenter IPs.",
+        "opened, the persistent profile then remembers it. Avoid VPN/datacenter IPs.",
     )
 
 
@@ -428,7 +428,7 @@ def login(page: Page, email: str, password: str) -> None:
         page.wait_for_selector(SEL["user"], timeout=30000)
     except PWTimeout:
         shot(page, "login-no-form")
-        raise HardFail(EXIT_LOGIN, "the login form didn't load — try again in a minute.")
+        raise HardFail(EXIT_LOGIN, "the login form didn't load, try again in a minute.")
 
     try:
         page.fill(SEL["user"], email)
@@ -447,7 +447,7 @@ def login(page: Page, email: str, password: str) -> None:
         shot(page, "login-error")
         raise HardFail(
             EXIT_LOGIN,
-            "login didn't complete — the page closed or navigation failed "
+            "login didn't complete, the page closed or navigation failed "
             f"({exc.__class__.__name__}). Re-run; if it keeps happening, finish "
             "logging in manually in the browser window that opens.",
         )
@@ -457,14 +457,14 @@ def login(page: Page, email: str, password: str) -> None:
         raise HardFail(
             EXIT_LOGIN,
             "Naukri asked for an OTP / device verification.\n"
-            "    Complete it ONCE in the open browser window — the persistent profile "
+            "    Complete it ONCE in the open browser window, the persistent profile "
             "then remembers this device and future runs won't ask again.",
         )
     if not logged_in:
         shot(page, "login-failed")
         raise HardFail(
             EXIT_LOGIN,
-            "login failed — double-check NAUKRI_EMAIL / NAUKRI_PASSWORD in your .env.",
+            "login failed, double-check NAUKRI_EMAIL / NAUKRI_PASSWORD in your .env.",
         )
     log.info("login OK.")
 
@@ -495,7 +495,7 @@ def update_resume(page: Page, pdf: Path) -> bool:
             shot(page, "resume-upload-failed")
             raise HardFail(
                 EXIT_RESUME,
-                "could not attach the resume — Naukri's upload markup may have changed "
+                "could not attach the resume, Naukri's upload markup may have changed "
                 f"(update SEL['resume_input']). Details: {exc}",
             )
 
@@ -517,7 +517,7 @@ def update_resume(page: Page, pdf: Path) -> bool:
 def launch_context(pw, browser: str):
     """Launch a headful persistent context in an ISOLATED profile dir."""
     common = dict(
-        headless=False,  # ALWAYS headful — headless is blocked by Akamai.
+        headless=False, # ALWAYS headful, headless is blocked by Akamai.
         locale="en-IN",
         timezone_id="Asia/Kolkata",
         viewport={"width": 1366, "height": 900},
@@ -535,7 +535,7 @@ def launch_context(pw, browser: str):
             return ctx
         except Exception as exc:
             log.warning(
-                f"could not launch '{browser}' ({exc.__class__.__name__}) — "
+                f"could not launch '{browser}' ({exc.__class__.__name__}), "
                 "falling back to bundled Chromium."
             )
 
@@ -568,9 +568,9 @@ def _prune_artifacts() -> None:
 def postflight(confirmed: bool, browser: str, resume: Path) -> None:
     step("Wrap up")
     if confirmed:
-        log.info("Resume re-uploaded and confirmed — your profile's 'last updated' time is refreshed.")
+        log.info("Resume re-uploaded and confirmed, your profile's 'last updated' time is refreshed.")
     else:
-        log.warning("Resume was submitted but not text-confirmed — verify artifacts/resume-updated.png.")
+        log.warning("Resume was submitted but not text-confirmed, verify artifacts/resume-updated.png.")
     profile = PROFILE_DIRS.get(browser, PROFILE_DIRS["chromium"]).name
     log.info(f"summary: browser={browser} · resume={resume.name} · session kept in {profile}/ (git-ignored)")
     _prune_artifacts()
@@ -580,7 +580,7 @@ def postflight(confirmed: bool, browser: str, resume: Path) -> None:
 
 def run() -> int:
     _STEP["total"] = 6
-    log.info("Naukri profile auto-update — starting.")
+    log.info("Naukri profile auto-update, starting.")
 
     resume = preflight()  # STEP 1 (may prompt for a resume on first run)
     email = os.environ["NAUKRI_EMAIL"].strip()
@@ -634,7 +634,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.preflight:
             preflight()
-            log.info("Preflight OK — you're ready to run ./run.sh")
+            log.info("Preflight OK, you're ready to run ./run.sh")
             _banner(EXIT_OK)
             return EXIT_OK
         code = run()
