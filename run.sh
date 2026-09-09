@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Naukri profile auto-update — one-command runner.
+# Naukri profile auto-update: one-command runner.
 #   First run : creates a venv, installs deps + bundled Chromium, scaffolds .env.
 #   Every run : refreshes your Naukri profile by re-uploading your resume (headful).
 #
@@ -32,7 +32,7 @@ fi
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   leak=$(git ls-files 2>/dev/null | grep -E '(^|/)\.env$|(^|/)\.env\.[^/]*$|storage_state\.json|-profile/|^artifacts/|^resume/.+\.(pdf|docx?|rtf)$' | grep -v '^\.env\.example$' || true)
   if [ -n "$leak" ]; then
-    err "Sensitive files are tracked by git — refusing to run so you don't leak them:"
+    err "Sensitive files are tracked by git, refusing to run so you don't leak them:"
     printf '%s   - %s%s\n' "$RED" "$leak" "$RST" >&2
     err "Fix:  git rm --cached <file>   then confirm .gitignore covers it (see SECURITY.md)."
     exit 6
@@ -54,8 +54,8 @@ source .venv/bin/activate || die "could not activate the venv" 1
 # --- 4) First-run install (deps + bundled Chromium) -----------------------
 if ! python -c 'import playwright' >/dev/null 2>&1; then
   info "installing dependencies (one time) ..."
-  pip install -q --upgrade pip        || die "pip upgrade failed — check your internet/proxy, then re-run." 1
-  pip install -q -r requirements.txt  || die "dependency install failed — check your internet/proxy, then re-run." 1
+  pip install -q --upgrade pip        || die "pip upgrade failed, check your internet/proxy, then re-run." 1
+  pip install -q -r requirements.txt  || die "dependency install failed, check your internet/proxy, then re-run." 1
 fi
 info "ensuring bundled Chromium is present ..."
 python -m playwright install chromium >/dev/null 2>&1 \
@@ -64,7 +64,7 @@ python -m playwright install chromium >/dev/null 2>&1 \
 
 # --- 5) .env scaffold ------------------------------------------------------
 if [ ! -f .env ]; then
-  [ -f .env.example ] || die ".env and .env.example are both missing — cannot continue." 2
+  [ -f .env.example ] || die ".env and .env.example are both missing, cannot continue." 2
   cp .env.example .env
   chmod 600 .env 2>/dev/null || true
   warn "Created .env from .env.example."
